@@ -59,3 +59,7 @@ Bot do Telegram voltado para notificações de aniversariantes da corretora pelo
 
 --------
 
+# Visualizações
+Quantidade de aniversariantes por mês
+Sexo dos aniversariantes do mês -> Implementar no futuro, atualmente não tem o sexo na planilha 😅
+Faixa etária dos aniversariantes
