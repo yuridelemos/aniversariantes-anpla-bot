@@ -1,6 +1,8 @@
-pip
-python-dotenv
-ruff
--e .
 flask
 gunicorn
+requests
+python-dotenv
+pandas
+gspread
+matplotlib
+numpy
