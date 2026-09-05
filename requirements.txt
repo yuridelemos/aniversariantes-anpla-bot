@@ -2,3 +2,5 @@ pip
 python-dotenv
 ruff
 -e .
+flask
+gunicorn

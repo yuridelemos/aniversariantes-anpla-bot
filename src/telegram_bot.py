@@ -11,6 +11,8 @@ from src.visualization.visualize import barv_aniversariantes_by
 load_dotenv()
 
 TOKEN = os.getenv("API_KEY")
+if not TOKEN:
+    raise RuntimeError("Variável de ambiente API_KEY não foi definida.")
 
 COMANDOS_INICIO = {
     "/start", "ola", "eae", "menu", "oi", "oie",
