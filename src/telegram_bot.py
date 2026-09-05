@@ -35,37 +35,20 @@ class TelegramBot:
         self.driveBot = DriveBot()
         self.session = requests.Session()
 
-    def start(self):
-        update_id = None
-        while True:
-            try:
-                updates = self.get_message(update_id)
-            except requests.RequestException as e:
-                print(f"Erro de conexão ao buscar mensagens: {e}")
-                continue
+    def process_update(self, update: dict):
+        """Processa uma única atualização vinda do webhook do Telegram."""
+        try:
+            message = update["message"]
+            chat_id = message["from"]["id"]
+            text = message["text"]
+        except KeyError:
+            return  # mensagem sem texto (sticker, foto, etc.) — ignora
 
-            messages = updates.get("result", [])
-            for message in messages:
-                update_id = message["update_id"]
-                try:
-                    chat_id = message["message"]["from"]["id"]
-                    text = message["message"]["text"]
-                except KeyError:
-                    continue  # mensagem sem texto (sticker, foto, etc.)
-
-                try:
-                    answer_bot, is_photo = self.create_answer(text)
-                    self.send_answer(chat_id, answer_bot, is_photo)
-                except Exception as e:
-                    print(f"Erro ao processar mensagem: {e}")
-
-    def get_message(self, update_id):
-        params = {"timeout": 1000}
-        if update_id:
-            params["offset"] = update_id + 1
-        response = self.session.get(f"{self.base_url}getUpdates", params=params)
-        response.raise_for_status()
-        return response.json()
+        try:
+            answer_bot, is_photo = self.create_answer(text)
+            self.send_answer(chat_id, answer_bot, is_photo)
+        except Exception as e:
+            print(f"Erro ao processar mensagem: {e}")
 
     def create_answer(self, message_text):
         message_text = message_text.strip().lower()
