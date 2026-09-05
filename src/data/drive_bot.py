@@ -27,5 +27,6 @@ class DriveBot:
     def get_data(self):
         sh = self.gc.open_by_key(SHEET)
         worksheet = sh.sheet1
-        dataframe = pd.DataFrame(worksheet.get_all_values())
+        data = worksheet.get_all_values()
+        dataframe = pd.DataFrame(data[1:], columns=data[0])
         return dataframe
