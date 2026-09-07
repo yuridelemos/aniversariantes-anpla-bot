@@ -18,6 +18,7 @@ jobs:
       WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
       RENDER_URL: ${{ secrets.RENDER_URL }}
       TELEGRAM_ALLOWED_USER_IDS: ${{ secrets.TELEGRAM_ALLOWED_USER_IDS }}
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
       PYTHONPATH: ${{ github.workspace }}
 
     steps:
@@ -33,6 +34,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Criar credentials.json
+        run: echo '${{ secrets.GOOGLE_CREDENTIALS }}' > credentials.json
 
       - name: Enviar e-mail
         run: python scripts/enviar_email_diario.py
