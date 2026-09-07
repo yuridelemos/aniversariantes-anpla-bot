@@ -2,6 +2,8 @@ import json
 import os
 from dotenv import load_dotenv
 import requests
+from telegram import Bot, Update
+from telegram.ext import ContextTypes
 
 from src.data.aniversariantes import aniversariantes_do_dia
 from src.data.drive_bot import DriveBot
@@ -34,17 +36,48 @@ class TelegramBot:
         self.base_url = f"https://api.telegram.org/bot{self.token}/"
         self.driveBot = DriveBot()
         self.session = requests.Session()
+        self.allowed_user_ids = {
+            int(user_id.strip())
+            for user_id in os.getenv(
+                "TELEGRAM_ALLOWED_USER_IDS",
+                ""
+            ).split(",")
+            if user_id.strip()
+        }
 
-    def process_update(self, update: dict):
+        self.bot = Bot(token=self.token)
+
+    def is_authorized(self, update: Update) -> bool:
+        user = update.effective_user
+
+        if user is None:
+            return False
+
+        return user.id in self.allowed_user_ids
+
+    async def restrict_access(self, update: Update) -> bool:
+        if self.is_authorized(update):
+            return True
+
+        if update.message:
+            await update.message.reply_text("🚫 Você não tem autorização para usar este bot.")
+        return False
+
+    async def process_update(self, update: dict):
         """Processa uma única atualização vinda do webhook do Telegram."""
         try:
             message = update["message"]
-            chat_id = message["from"]["id"]
+            chat_id = message["chat"]["id"]
             text = message["text"]
         except KeyError:
             return  # mensagem sem texto (sticker, foto, etc.) — ignora
 
         try:
+            telegram_update = Update.de_json(update, self.bot)
+
+            if not await self.restrict_access(telegram_update):
+                return
+
             answer_bot, is_photo = self.create_answer(text)
             self.send_answer(chat_id, answer_bot, is_photo)
         except Exception as e:

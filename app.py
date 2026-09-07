@@ -1,3 +1,4 @@
+import asyncio
 import os
 from flask import Flask, request, abort
 from dotenv import load_dotenv
@@ -10,7 +11,8 @@ app = Flask(__name__)
 bot = TelegramBot()
 
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET")  # string aleatória que só você e o Telegram sabem
-
+if not WEBHOOK_SECRET:
+    raise RuntimeError("Variável de ambiente WEBHOOK_SECRET não foi definida.")
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
@@ -20,7 +22,7 @@ def webhook():
         abort(403)
 
     update = request.get_json(force=True)
-    bot.process_update(update)
+    asyncio.run(bot.process_update(update))
     return "ok", 200
 
 
