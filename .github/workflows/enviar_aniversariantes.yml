@@ -1,0 +1,36 @@
+name: Enviar aniversariantes por e-mail
+
+on:
+  schedule:
+    - cron: "0 11 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  enviar-email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Enviar e-mail dos aniversariantes
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          SHEET_LINK: ${{ secrets.SHEET_LINK }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_ANPLA: ${{ secrets.EMAIL_ANPLA }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+          RENDER_URL: ${{ secrets.RENDER_URL }}
+          TELEGRAM_ALLOWED_USER_IDS: ${{ secrets.TELEGRAM_ALLOWED_USER_IDS }}
+
+        run: python scripts/enviar_email_diario.py
