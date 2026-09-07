@@ -9,7 +9,34 @@ def transform_dataframe(dataframe):
     today = pd.Timestamp.now()
     dataframe['Idade'] = (today - dataframe['Data de Nascimento']).dt.days // 365
 
-    dataframe['Mes'] = dataframe['Data de Nascimento'].dt.month
+    meses = {
+        1: 'Janeiro',
+        2: 'Fevereiro',
+        3: 'Março',
+        4: 'Abril',
+        5: 'Maio',
+        6: 'Junho',
+        7: 'Julho',
+        8: 'Agosto',
+        9: 'Setembro',
+        10: 'Outubro',
+        11: 'Novembro',
+        12: 'Dezembro'
+    }
+
+    dataframe['Mes'] = (
+        dataframe['Data de Nascimento']
+        .dt.month
+        .map(meses)
+    )
+
+    ordem_meses = list(meses.values())
+
+    dataframe['Mes'] = pd.Categorical(
+        dataframe['Mes'],
+        categories=ordem_meses,
+        ordered=True
+    )
     
     # Define age ranges and corresponding labels
     bins = [0, 18, 30, 40, 50, 60, np.inf]
