@@ -95,7 +95,7 @@ class TelegramBot:
             if hoje_df.empty:
                 return "Não há aniversariantes hoje.", False
             nomes = "\n".join(
-                f'{row["Nome"]} - {row["Idade"]} anos' for _, row in hoje_df.iterrows())
+                f'{row["Nome"]} - {row["Data de Nascimento"].strftime("%d/%m/%Y")} - {row["Idade"]} anos - {row["Ramo"]} - {row["Observacao"]}' for _, row in hoje_df.iterrows())
             return f"🎂 Aniversariantes de hoje:\n\n{nomes}", False
 
         if message_text in ('2', '3'):

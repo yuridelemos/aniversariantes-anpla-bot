@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 
 def montar_mensagem(aniversariantes_df, hoje):
     linhas = [
-        f'{row["Nome"]} - {row["Data de Nascimento"].strftime("%d/%m/%Y")} - {row["Idade"]} anos'
+        f'{row["Nome"]} - {row["Data de Nascimento"].strftime("%d/%m/%Y")} - {row["Idade"]} anos - {row["Ramo"]} - {row["Observacao"]}'
         for _, row in aniversariantes_df.iterrows()
     ]
     return (
