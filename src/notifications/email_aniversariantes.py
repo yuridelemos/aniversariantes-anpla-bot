@@ -1,3 +1,4 @@
+from email.utils import formataddr
 import os
 import smtplib
 from email.mime.text import MIMEText
@@ -24,7 +25,7 @@ def enviar_email_aniversariantes(aniversariantes_df, hoje):
 
     msg = MIMEText(mensagem)
     msg["Subject"] = f"Aniversariante(s) do dia {hoje.strftime('%d/%m/%Y')}"
-    msg["From"] = os.getenv("EMAIL_USER")
+    msg["From"] = formataddr(("Aniversariantes do Dia", os.getenv("EMAIL_USER")))
     msg["To"] = os.getenv("EMAIL_ANPLA")
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
