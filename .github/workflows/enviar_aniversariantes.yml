@@ -2,7 +2,8 @@ name: Enviar aniversariantes
 
 on:
   schedule:
-    - cron: '5 23 * * *'
+    - cron: '32 20 * * *'
+      timezone: 'America/Sao_Paulo'
   workflow_dispatch:
 
 jobs:
